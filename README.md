@@ -8,7 +8,7 @@ Download the latest release DMG and drag the app to Applications.
 
 Or install with terminal:
 
-curl -fsSL https://raw.githubusercontent.com/59Codings/AutoClicker/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/59Codings/MacOS-AutoClicker/main/install.sh | bash
 
 ## First Launch
 
