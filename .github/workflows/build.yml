@@ -1,0 +1,39 @@
+name: Build macOS App
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app
+
+      - name: Build
+        run: |
+          xcodebuild -project AutoClicker.xcodeproj \
+          -scheme AutoClicker \
+          -configuration Release \
+          -derivedDataPath build \
+          clean build
+
+      - name: Create DMG
+        run: |
+          brew install create-dmg
+          mkdir dist
+          create-dmg \
+          --volname "AutoClicker" \
+          --app-drop-link 400 150 \
+          build/Build/Products/Release/AutoClicker.app \
+          dist/AutoClicker.dmg
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: AutoClicker
+          path: dist/AutoClicker.dmg
