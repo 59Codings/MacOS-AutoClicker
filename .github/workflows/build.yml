@@ -32,8 +32,11 @@ jobs:
 
       - name: Create DMG
         run: |
+          brew install create-dmg
           mkdir -p dist
           create-dmg \
+            --volname "AutoClicker" \
+            --app-drop-link 400 150 \
             dist/AutoClicker.dmg \
             build/Build/Products/Release/
 
