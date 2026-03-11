@@ -4,19 +4,27 @@ on:
   release:
     types: [published]
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build:
     runs-on: macos-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Select Xcode
         run: sudo xcode-select -s /Applications/Xcode.app
 
-      - name: Build
+      - name: Install DMG tool
+        run: brew install create-dmg
+
+      - name: Build App
         run: |
-          xcodebuild -project AutoClicker.xcodeproj \
+          xcodebuild \
+          -project AutoClicker.xcodeproj \
           -scheme AutoClicker \
           -configuration Release \
           -derivedDataPath build \
@@ -24,7 +32,6 @@ jobs:
 
       - name: Create DMG
         run: |
-          brew install create-dmg
           mkdir dist
           create-dmg \
           --volname "AutoClicker" \
@@ -32,7 +39,7 @@ jobs:
           build/Build/Products/Release/AutoClicker.app \
           dist/AutoClicker.dmg
 
-      - name: Upload
+      - name: Upload DMG
         uses: actions/upload-artifact@v4
         with:
           name: AutoClicker
