@@ -32,12 +32,10 @@ jobs:
 
       - name: Create DMG
         run: |
-          mkdir dist
+          mkdir -p dist
           create-dmg \
-          --volname "AutoClicker" \
-          --app-drop-link 400 150 \
-          build/Build/Products/Release/AutoClicker.app \
-          dist/AutoClicker.dmg
+            dist/AutoClicker.dmg \
+            build/Build/Products/Release/
 
       - name: Upload DMG
         uses: actions/upload-artifact@v4
