@@ -58,11 +58,10 @@ class SettingsStorage {
     }
     
     func load(into settings: AppSettings) {
-        do {
-            let data = try Data(contentsOf: fileURL)
-            let decoder = PropertyListDecoder()
-            let payload = try decoder.decode(SettingsPayload.self, from: data)
-            
+        guard let data = try? Data(contentsOf: fileURL) else { return }
+        
+        let decoder = PropertyListDecoder()
+        if let payload = try? decoder.decode(SettingsPayload.self, from: data) {
             settings.hotkey = payload.hotkey
             settings.activationMode = payload.activationMode
             settings.cps = payload.cps
@@ -74,8 +73,26 @@ class SettingsStorage {
             settings.clickLimit = payload.clickLimit
             settings.language = payload.language
             settings.isStartWithMacOS = payload.isStartWithMacOS
-        } catch {
-            print("Failed to load settings from \(fileURL): \(error)")
+            return
         }
+        
+        print("SettingsStorage: Full decode failed, attempting field-by-field recovery")
+        guard let dict = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: Any] else {
+            print("SettingsStorage: Could not read settings file as dictionary – starting fresh")
+            return
+        }
+        
+        if let raw = dict["cps"] as? Double { settings.cps = raw }
+        if let raw = dict["clickDutyCycle"] as? Double { settings.clickDutyCycle = raw }
+        if let raw = dict["isUnlimited"] as? Bool { settings.isUnlimited = raw }
+        if let raw = dict["isRandomCPS"] as? Bool { settings.isRandomCPS = raw }
+        if let raw = dict["isClickLimitEnabled"] as? Bool { settings.isClickLimitEnabled = raw }
+        if let raw = dict["clickLimit"] as? Int { settings.clickLimit = raw }
+        if let raw = dict["language"] as? String { settings.language = raw }
+        if let raw = dict["isStartWithMacOS"] as? Bool { settings.isStartWithMacOS = raw }
+        if let raw = dict["activationMode"] as? String,
+           let mode = ActivationMode(rawValue: raw) { settings.activationMode = mode }
+        if let raw = dict["mouseButton"] as? String,
+           let btn = MouseButton(rawValue: raw) { settings.mouseButton = btn }
     }
 }

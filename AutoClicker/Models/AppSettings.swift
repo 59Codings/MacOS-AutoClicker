@@ -20,8 +20,8 @@ enum HotkeyType: String, Codable {
 
 struct Hotkey: Codable, Equatable {
     var type: HotkeyType
-    var keyCode: UInt16? // keyboard
-    var mouseButton: Int? // mouse (e.g., 3, 4, 5)
+    var keyCode: UInt16? 
+    var mouseButton: Int? 
     var displayString: String
     
     static let defaultHotkey = Hotkey(type: .keyboard, keyCode: 122, mouseButton: nil, displayString: "F1") // 122 is F1
@@ -37,7 +37,7 @@ class AppSettings {
         didSet { save() }
     }
     
-    var cps: Double = 200.0 {
+    var cps: Double = 10.0 {
         didSet { save() }
     }
     
@@ -102,7 +102,7 @@ class AppSettings {
         
         hotkey = Hotkey.defaultHotkey
         activationMode = .toggle
-        cps = 200.0
+        cps = 10.0
         clickDutyCycle = 50.0
         mouseButton = .left
         isClickLimitEnabled = false
