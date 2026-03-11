@@ -24,11 +24,13 @@ jobs:
       - name: Build App
         run: |
           xcodebuild \
-          -project AutoClicker.xcodeproj \
-          -scheme AutoClicker \
-          -configuration Release \
-          -derivedDataPath build \
-          clean build
+            -project AutoClicker.xcodeproj \
+            -scheme AutoClicker \
+            -configuration Release \
+            -derivedDataPath build \
+            ARCHS="arm64 x86_64" \
+            ONLY_ACTIVE_ARCH=NO \
+            clean build
 
       - name: Create DMG
         run: |
